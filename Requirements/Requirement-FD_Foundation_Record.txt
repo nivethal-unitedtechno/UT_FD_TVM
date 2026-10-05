@@ -1,0 +1,110 @@
+================================================================================
+REQUIREMENT - FD Foundation Record
+================================================================================
+Date        : 2026-10-05
+Source code : C:\Users\UTIS-514\MyFDTVMProject\force-app\main\default
+
+Requirement:
+  Find and list every place where the logic depends on:
+    1. Foundation_Record__c = TRUE   (Case / Account)
+    2. Case_Category__c = 'New Digital Support'
+  For each one, give the component type (Flow, Apex Class, Apex Trigger, ...),
+  the component name and its API name, in a table.
+  This is a read-only listing. No logic was changed.
+
+Search scope: classes, triggers, flows, objects, lwc, aura, flexipages, layouts,
+              permissionsets, applications, tabs, staticresources, contentassets.
+              Only Apex Classes, Apex Triggers and Flows had matches.
+
+================================================================================
+1. FOUNDATION_RECORD__C = TRUE
+================================================================================
+
+1A. FLOWS
++----+------------------------------+----------------------------------------------------+-------------------------------------------+------------------------------+------------------------------------------------------------+
+| #  | Component Type               | Component Name (Label)                             | API Name                                  | Object / Trigger             | Where the condition is used                                |
++----+------------------------------+----------------------------------------------------+-------------------------------------------+------------------------------+------------------------------------------------------------+
+| 1  | Flow (Record-Triggered)      | Case Assignment Process                            | Case_Assignment_Process                   | Case - Before Save, C/U      | Start entry condition: Foundation_Record__c = true         |
+| 2  | Flow (Record-Triggered)      | Case - Created                                     | Case_Created                              | Case - After Save, Create    | Decision "Terminate_Gate": $Record.Foundation_Record__c=true|
+| 3  | Flow (Record-Triggered)      | Case Route Hybrid To Account Technician(Ready for QA) | Case_Route_Hybrid_To_Account_Technician | Case - After Save, C/U       | Decision "Foundation_Record": $Record.Foundation_Record__c=true |
+| 4  | Flow (Record-Triggered)      | Case - SLA Completed                               | Case_SLA_Completed                        | Case - After Save, Update    | Start entry condition: Foundation_Record__c = true         |
+| 5  | Flow (Record-Triggered)      | Case SLA Time Calculation                          | Case_SLA_Time_Calculation                 | Case - After Save, C/U       | Start entry condition: Foundation_Record__c = true         |
+| 6  | Flow (Record-Triggered)      | Case - Updated                                     | Case_Updated                              | Case - After Save, Update    | Decision "Testing_Decision" (outcome Is_if_Foundation_Record): $Record.Foundation_Record__c = true |
+| 7  | Flow (Record-Triggered)      | Update Case AT and Owner                           | Update_Case_AT_and_Owner                  | Case - After Save, Create    | Start entry condition: Foundation_Record__c = true         |
+| 8  | Flow (Record-Triggered)      | Update Case On Hold Time                           | Update_Case_Oh_Hold_Time                  | Case - Before Save, C/U      | Start entry condition: Foundation_Record__c = true         |
+| 9  | Flow (Record-Triggered)      | Update Case Subject                                | Update_Case_Subject                       | Case - Before Save, Create   | Start entry condition: Foundation_Record__c = true         |
+| 10 | Flow (Autolaunched/Subflow)  | Case Status Subflow                                | Case_Status_Subflow                       | Subflow (input: Case)        | Decision "Terminate_Gate" (outcome Is_it_FD): Case.Foundation_Record__c = true |
+| 11 | Flow (Autolaunched/Subflow)  | Workday Hour Master                                | Workday_Hour_Master                       | Subflow (input: CaseId)      | Decision "Is_It_FD" (outcome Yes): CaseId.Foundation_Record__c = true |
++----+------------------------------+----------------------------------------------------+-------------------------------------------+------------------------------+------------------------------------------------------------+
+  C/U = Create and Update
+
+  Note: Case - Updated (Case_Updated) also checks Foundation_Record__c = FALSE
+        in decisions "Case_Stalled_General" and "Is_the_Case_Closed". These are
+        the legacy / non-Foundation paths.
+
+1B. APEX TRIGGER
++----+----------------+--------------------+--------------------+--------------------------------------------------------------------------------------------+
+| #  | Component Type | Component Name     | API Name           | Where the condition is used                                                                |
++----+----------------+--------------------+--------------------+--------------------------------------------------------------------------------------------+
+| 1  | Apex Trigger   | CaseTrigger_FNDN   | CaseTrigger_FNDN   | On Case (before/after insert and update). Only processes Cases with                       |
+|    |                |                    |                    | Foundation_record__c == true and passes them to CalculateCaseDueDate, CaseOOOAssignmentHandler and Th_CaseTrigger |
++----+----------------+--------------------+--------------------+--------------------------------------------------------------------------------------------+
+
+1C. APEX CLASSES (main code)
++----+----------------+--------------------------------+--------------------------------+--------------------------------------------------------------------------------+
+| #  | Component Type | Component Name                 | API Name                       | Where the condition is used                                                    |
++----+----------------+--------------------------------+--------------------------------+--------------------------------------------------------------------------------+
+| 1  | Apex Class     | CalculateCaseDueDate           | CalculateCaseDueDate           | Foundation logic runs when Case.Foundation_Record__c == true (line 47);        |
+|    |                |                                |                                | SOQL "AND Foundation_Record__c = true" (line 476); legacy logic when false     |
+| 2  | Apex Class     | Th_CaseTrigger                 | Th_CaseTrigger                 | Splits cases: Foundation_Record__c == true -> Foundation logic (line 17),      |
+|    |                |                                |                                | everything else -> legacy logic                                                |
+| 3  | Apex Class     | CaseOOOAssignmentHandler       | CaseOOOAssignmentHandler       | Filters scope: c.Foundation_Record__c == true (line 82)                        |
+| 4  | Apex Class     | CaseAssignmentBatch            | CaseAssignmentBatch            | Batch SOQL: AND Foundation_Record__c = TRUE (lines 21, 146)                    |
+| 5  | Apex Class     | CaseAssignmentHybridBatch      | CaseAssignmentHybridBatch      | Batch SOQL: AND Foundation_Record__c = TRUE (line 15)                          |
+| 6  | Apex Class     | CaseStatusUpdateBatch          | CaseStatusUpdateBatch          | Batch SOQL: AND Foundation_Record__c = TRUE (lines 25, 34, 61, 66);            |
+|    |                |                                |                                | in-code check c.Foundation_Record__c == true (line 118)                        |
+| 7  | Apex Class     | SLARemainingTimeSendEmailBatch | SLARemainingTimeSendEmailBatch | Batch SOQL on Case: WHERE Foundation_Record__c = True (line 4)                 |
+| 8  | Apex Class     | PRCompleteFlagOnAccBatch       | PRCompleteFlagOnAccBatch       | SOQL on ACCOUNT: WHERE Foundation_Record__c = TRUE (line 22)                   |
+| 9  | Apex Class     | AutoQACaseScheduler            | AutoQACaseScheduler            | Creates a Foundation Case by setting Case_Category__c = 'New Digital Support'  |
+|    |                |                                |                                | (comments lines 23-28; see section 2)                                          |
++----+----------------+--------------------------------+--------------------------------+--------------------------------------------------------------------------------+
+
+1D. APEX TEST CLASSES (reference Foundation_Record__c in setup / asserts)
++----+--------------------+--------------------------------+--------------------------------+---------------------------------------------------------------+
+| #  | Component Type     | Component Name                 | API Name                       | Usage                                                         |
++----+--------------------+--------------------------------+--------------------------------+---------------------------------------------------------------+
+| 1  | Apex Class (Test)  | CaseAssignmentBatchTest        | CaseAssignmentBatchTest        | SOQL WHERE Foundation_Record__c = true; asserts true          |
+| 2  | Apex Class (Test)  | CaseAssignmentHybridBatchTest  | CaseAssignmentHybridBatchTest  | Comment reference only (line 79)                              |
+| 3  | Apex Class (Test)  | CaseOOOAssignmentHandlerTest   | CaseOOOAssignmentHandlerTest   | Builds Foundation / non-Foundation Cases; asserts             |
+| 4  | Apex Class (Test)  | CaseTriggerHelper_Test         | CaseTriggerHelper_Test         | SOQL WHERE Foundation_Record__c = true; asserts true          |
+| 5  | Apex Class (Test)  | Test_AutoQACaseScheduler       | Test_AutoQACaseScheduler       | Asserts 'New Digital Support' -> Foundation_Record__c = true  |
+| 6  | Apex Class (Test)  | Test_calculatecaseduedate      | Test_calculatecaseduedate      | Foundation case via Case_Category__c; checks == true          |
+| 7  | Apex Class (Test)  | Test_CaseDueDateTrigger        | Test_CaseDueDateTrigger        | Comment reference only (line 279)                             |
+| 8  | Apex Class (Test)  | Test_CaseStatusUpdateBatch     | Test_CaseStatusUpdateBatch     | Asserts "Foundation Record formula must evaluate TRUE"        |
+| 9  | Apex Class (Test)  | Th_CaseTrigger_Test            | Th_CaseTrigger_Test            | Foundation path vs legacy path; asserts true                  |
++----+--------------------+--------------------------------+--------------------------------+---------------------------------------------------------------+
+
+================================================================================
+2. CASE_CATEGORY__C = 'NEW DIGITAL SUPPORT'
+================================================================================
++----+--------------------+--------------------------+--------------------------+-----------------------------------------------------------------------+
+| #  | Component Type     | Component Name           | API Name                 | Where the value is used                                               |
++----+--------------------+--------------------------+--------------------------+-----------------------------------------------------------------------+
+| 1  | Apex Class         | AutoQACaseScheduler      | AutoQACaseScheduler      | Sets Case_Category__c = 'New Digital Support' on new Case (line 37),  |
+|    |                    |                          |                          | which makes Foundation_Record__c evaluate true                        |
+| 2  | Apex Class (Test)  | Test_AutoQACaseScheduler | Test_AutoQACaseScheduler | assertEquals('New Digital Support', Case_Category__c) (line 76)       |
++----+--------------------+--------------------------+--------------------------+-----------------------------------------------------------------------+
+
+  No Flow, Trigger or other component compares Case_Category__c to
+  'New Digital Support' directly. They all use Foundation_Record__c instead.
+
+================================================================================
+SUMMARY
+================================================================================
+  Flows        : 11  (9 record-triggered on Case, 2 subflows)
+  Apex Trigger : 1   (CaseTrigger_FNDN)
+  Apex Classes : 9 main + 9 test
+  Note         : The Foundation_Record__c field definition (formula) is not in
+                 the local source (objects folder), so its formula could not
+                 be checked here.
+================================================================================
