@@ -1,0 +1,258 @@
+PROJECT OVERVIEW - TEAM VELOCITY MARKETING SALESFORCE SANDBOX
+==============================================================
+Org alias : FD - TVM Sandbox (teamvelocity--fullsando)
+Snapshot  : 2026-10-06
+Method    : Read-only queries for metadata, record counts and user profiles.
+            Apex source, page layouts, reports and integration settings were
+            not read.
+
+
+SUMMARY
+-------
+This is the CRM for an automotive dealership digital-marketing agency. It
+covers dealer accounts, OEM co-op programs, media budgets, creative and
+compliance requests, onboarding, and a large support-case operation.
+
+There are two business lines:
+  - TVM (Team Velocity)
+  - Foundation / FNDN (Foundation Digital)
+The two lines share the org through separate record types and "Hybrid"
+billing record types.
+
+
+1. ORG BASICS
+-------------
+Org name        : Team Velocity Marketing (full sandbox "fullsando")
+Edition         : Unlimited Edition
+Instance        : USA712S
+Created         : October 2021
+Time zone       : America/New_York
+Active users    : 635 across 57 profiles
+
+Largest user groups (active users per profile):
+  Identity User ................ 97
+  Production Support ........... 62
+  Account Manager .............. 54
+  Product Manager .............. 46
+  RAD .......................... 44
+  Foundation Standard user plus  34
+  Digital Support .............. 32
+  General Support .............. 27
+  System Administrator ......... 22
+  OEM .......................... 17
+  Onboarding Manager ........... 16
+  RSM .......................... 16
+  Client Team Lead ............. 15
+  Exec ......................... 12
+  SME .......................... 11
+
+
+2. BUSINESS LINES (FROM RECORD TYPES)
+-------------------------------------
+Account (4):
+  TVM Dealership, Foundation Dealership, TVM Hybrid FNDN Billed,
+  FNDN Hybrid TVM Billed
+
+Opportunity (15):
+  Prospect, Active, Inactive, Try & Buy, Buy/Sell, Parent MSA, Child MSA,
+  Direct Enrollment, Ford/Lincoln Prospect, Ford/Lincoln Active,
+  Ford/Lincoln Inactive, GM Canada, Foundation Opportunity, FNDN Hybrid,
+  Historical
+
+Case (5):
+  Foundation - Client Services, Foundation - Measurement, Foundation - OEM,
+  Foundation - Performance Review, Master Record Type
+
+
+3. DATA VOLUME
+--------------
+  Case ......................... 330,398
+  Contact ...................... 131,716
+  Project Task ................. 131,038
+  Monthly Budget ................ 78,850
+  Creative Request .............. 46,878
+  Opportunity ................... 40,720
+  Account ....................... 35,613
+  OEM Enrollment ................ 24,006
+  Compliance Request ............ 23,199
+  Measurement .................... 4,996
+  Onboarding ..................... 4,329
+  User Story ..................... 2,885
+  Foundation Onboarding .......... 2,591
+  Survey Response ................ 1,509
+  Lead ........................... 1,365
+
+Case is by far the largest object, so support and fulfilment is the main
+workload in this org.
+
+
+4. CUSTOM OBJECTS
+----------------
+351 custom objects in total: 237 come from managed packages, and the rest
+are the org's own. Grouped by area:
+
+Dealer and OEM:
+  OEM Program, OEM Enrollment (with Change and Product), OEM Dealer,
+  OEM Allocation, OEM Team, OEM Notes, Vendor, Vendor OEM Rep, DMA Name,
+  Auto Group
+
+Budgets and sales:
+  Monthly Budget, Monthly Goal, Media Budgets Loaded, Sales Data,
+  Sales Activity, Previous Sales Result, Offer, Discount Request,
+  Credit Request, Cancellation Request, Addendum Request, Product History
+
+Foundation:
+  Foundation Onboarding, Foundation Credit Request,
+  Foundation Measurement Change History, FNDN Financials, Measurement,
+  Digital Build Request, Google Verification Record, 90-Day Website Review
+
+Onboarding:
+  Onboarding, Onboarding Package, Onboarding Team, Checklist,
+  Checklist Task, In-App Checklist Settings
+
+Creative and compliance:
+  Creative Request (with Change, Log, Size and Theme Template),
+  Full Service Creative Request, Brand Standard, Compliance Request,
+  Compliance Task, Compliance Creative Note, Rush Request
+
+Projects and internal delivery:
+  Project Task (with Group, Log, Size and Hours), Sprint, User Story,
+  Dev Task, Defect, Test Case
+
+Case operations:
+  Case Routing Config, Case Transfer, SLA Time Calculation,
+  Email Service Case Assignment, Agent Transfer Summary, OOO Calendar,
+  Follow Up
+
+Engagement:
+  Survey (Deployment, Link, Schedule, Response), Meeting Recap,
+  Client Interactions, Touch, TouchPoint Callout, Quiz, Training Program
+
+Integration and config:
+  SF2SF Automation Setting and SF2SF Sharing Queue (Salesforce-to-Salesforce,
+  likely a link to a separate Foundation org), Process Switches, Audit Log,
+  Event Log
+
+
+5. AUTOMATION
+-------------
+FLOWS: 692 in total, 569 active.
+  Active by type:
+    Automated (autolaunched) ... 377
+    Screen flows ............... 178
+    Routing flows ................ 7
+    Surveys ...................... 7
+  Inactive autolaunched flows .. 100
+
+  Active record-triggered flows per object:
+    Opportunity ................. 69
+    Case ........................ 37
+    Account ..................... 35
+    Foundation Onboarding ....... 16
+    Event ........................ 9
+    Contact ...................... 8
+    Onboarding Package ........... 7
+    Monthly Budget ............... 7
+
+  This is the heaviest-automated part of the org. There are many flows on
+  the same objects, so the order they run in and how they interact with
+  triggers is a real risk.
+
+APEX: 260 classes, about 1.08 million characters of code.
+  111 of the classes are tests.
+  Largest classes:
+    CalculateCaseDueDate, SendBetterEmail, OnboardingTriggerHandler,
+    AccandoppProductTypeManager, mediaBudgetFlagOnAccBatch, ScheduleEmail,
+    UpdateOpportunityStatusBatch, TouchPointMakeAccountPOSTCallout
+  Batch jobs include:
+    CaseAssignmentBatch, CaseAssignmentHybridBatch, CaseStatusUpdateBatch,
+    SLARemainingTimeSendEmailBatch, PRCompleteFlagOnAccBatch
+
+TRIGGERS: 20, of which 17 are active.
+  Case has two triggers (CaseTrigger and CaseTrigger_FNDN).
+  ContentDocumentLink has two triggers.
+  OpportunityLineItem has three triggers.
+  The TouchPoint triggers on Account, Contact and Auto Group are inactive.
+
+  Full list:
+    AccountTrigger ........................ Account (Active)
+    TouchPointAccountUpdateTrigger ........ Account (Inactive)
+    AttachmentTrigger ..................... Attachment (Active)
+    TouchPointAutoGroupUpdateTrigger ...... Auto_Group__c (Inactive)
+    CaseTrigger ........................... Case (Active)
+    CaseTrigger_FNDN ...................... Case (Active)
+    ContactTrigger ........................ Contact (Active)
+    TouchPointContactUpdateTrigger ........ Contact (Inactive)
+    ContentDocumentLinkTrigger ............ ContentDocumentLink (Active)
+    ContentDocumentLinkTrigger_FNDN ....... ContentDocumentLink (Active)
+    ContentVersionTrigger ................. ContentVersion (Active)
+    FeedItemTrigger ....................... FeedItem (Active)
+    OnboardingTrigger ..................... Foundation_Onboarding__c (Active)
+    MeasurementTrigger .................... Measurement__c (Active)
+    TouchPointBudgetUpdateTrigger ......... Monthly_Budget__c (Active)
+    OpportunityContractFileTrigger ........ Opportunity (Active)
+    OpportunityProductTrigger ............. OpportunityLineItem (Active)
+    OpportunityLineItemTrigger ............ OpportunityLineItem (Active)
+    create_OppProduct_History ............. OpportunityLineItem (Active)
+    slack_User_Ticket ..................... User_Story__c (Active)
+
+UI COMPONENTS:
+  49 LWCs: almost all are from UnofficialSF Flow Screen Components (fsc_*)
+    and SendBetterEmail, not custom-built.
+  32 Aura components: onboarding QA checklists, media budget senders,
+    account reports, AccountHierarchy.
+  35 Visualforce pages: mostly site and community templates, plus Order
+    Confirmation PDF pages, including a _FNDN version.
+
+
+6. CURRENT DEVELOPMENT (LAST 1-2 WEEKS)
+---------------------------------------
+Almost all recent work is on case assignment, routing and SLA.
+
+Apex changed 4-5 October 2026:
+  CaseAssignmentBatch and its Hybrid version, CaseOOOAssignmentHandler,
+  CalculateCaseDueDate, CaseStatusUpdateBatch, SLARemainingTimeSendEmailBatch
+
+Flows changed 25 September - 5 October 2026:
+  About 20 case-related flows, including Case Assignment Process,
+  Route Hybrid to Account Technician, reassign to secondary AT when OOO,
+  and auto-creating cases from Opportunity, Account and Monthly Budget
+  changes.
+
+FNDN Case Creator Screen Flow was updated on 28 September 2026.
+
+
+7. INSTALLED PACKAGES (49)
+--------------------------
+Marketing      : Pardot / Account Engagement, Zoom for Pardot
+Sales tools    : Gong, Highspot, Salesforce Maps, Sales Planning,
+                 Sales Insights
+Data Cloud     : Data Cloud and its related CDP packages
+Contact center : Amazon Connect, RingCentral
+Integrations   : Slack, Jira Cloud, monday.com, Docusign
+Flow add-ons   : UnofficialSF Flow Actions and Screen Components,
+                 Flow Launcher, Launch Flow Modal
+
+
+8. THINGS WORTH A LOOK
+----------------------
+1. Several triggers on the same object (two on Case, two on
+   ContentDocumentLink, three on OpportunityLineItem) plus dozens of flows
+   on the same objects. There is no guaranteed order between them, which
+   risks recursion and governor-limit errors.
+
+2. 100 inactive autolaunched flows and 3 inactive triggers. These are
+   candidates for clean-up.
+
+3. Risky-looking permission sets: "Unrequire MFA", "Disable MFA",
+   "Hard Delete", "View all data", "Query All", and test-like names "abc",
+   "abc1" and "abcs". These deserve a security review.
+
+4. Foundation vs TVM logic is duplicated (_FNDN triggers, PDFs and case
+   flows alongside the TVM versions). This fits the repo's FD Foundation
+   Record requirement and is worth mapping before adding more.
+
+
+NOTE
+----
+This overview is based on names, counts and dates rather than code.
