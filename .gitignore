@@ -1,0 +1,5 @@
+# Salesforce CLI local state (contains org/auth cache - never commit)
+.sf/
+.sfdx/
+.localdevserver/
+node_modules/
