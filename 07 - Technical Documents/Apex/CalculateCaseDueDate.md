@@ -10,7 +10,8 @@
 | Type | Apex Class |
 | API Version | 65.0 |
 | Status | Active |
-| Lines | 2032 |
+| Lines | 2055 |
+| Last Modified | 2026-10-15 06:03 UTC by Sandip Patel |
 
 ## Related Components
 
@@ -21,13 +22,17 @@
 
 | Line | Code |
 |---|---|
+| 10 | `// Case Category value that, together with Foundation_Record__c, decides which Cases` |
+| 11 | `// the insert/update routing logic runs for. Foundation_Record__c is a formula checkbox,` |
 | 13 | `private static final String FND_CATEGORY_NEW_DIGITAL_SUPPORT = 'New Digital Support';` |
 | 542 | `// Only Cases where Foundation_Record__c = TRUE or Case_Category__c = 'New Digital Support'` |
+| 543 | `// are routed. Foundation_Record__c is a formula checkbox - read directly instead of` |
 | 548 | `if((c.Foundation_Record__c == true \|\| c.Case_Category__c == FND_CATEGORY_NEW_DIGITAL_SUPPORT)` |
 | 768 | `// Cases whose Case Category changed TO New Digital Support` |
 | 783 | `'Case Category changed to New Digital Support. Case Id: ' + c.Id` |
 | 798 | `// to New Digital Support` |
 | 841 | `(c.Foundation_Record__c == true \|\|` |
+| 1384 | `(objCase.Foundation_Record__c == true \|\|` |
 
 ## Source
 
@@ -1273,6 +1278,7 @@ updatedCase.Start_Date__c = firstDayOfMonth.addDays(-daysToSubtract);*/
                     }
                 }
             }
+            setManualInsertAssignedStatus(objCase, metaConfig);
             continue; // skip non-hybrid logic
         }
         /* =========================
@@ -1402,9 +1408,30 @@ updatedCase.Start_Date__c = firstDayOfMonth.addDays(-daysToSubtract);*/
                     }
                 }
             }
+            setManualInsertAssignedStatus(objCase, metaConfig);
         }
     }
 }
+
+
+    // NEW: Only during Before Insert, after successful Manual routing.
+    // Does not affect Auto routing or existing Case updates.
+    private static void setManualInsertAssignedStatus(Case objCase, Case_Routing_Config__mdt config) {
+        if (
+            objCase.Id == null &&
+            config != null && config.Case_Entry__c == 'Manual' &&
+            (objCase.Foundation_Record__c == true ||
+             objCase.Case_Category__c == FND_CATEGORY_NEW_DIGITAL_SUPPORT) &&
+            objCase.Future_Case__c != true &&
+            (objCase.Digital_Execution_Start_Date__c == null ||
+             objCase.Digital_Execution_Start_Date__c <= Date.today()) &&
+            (objCase.Status_Filtered__c == null || objCase.Status_Filtered__c == 'New') &&
+            objCase.Case_Assign_To__c != null &&
+            objCase.OwnerId == objCase.Case_Assign_To__c
+        ) {
+            objCase.Status_Filtered__c = 'Assigned';
+        }
+    }
 
      public Static void dummy(){
         Integer i= 0;
@@ -1884,6 +1911,7 @@ public static void assignBeforeUpdateCasesWithTVMLogic(
                     }
                 }
             }
+            setManualInsertAssignedStatus(objCase, metaConfig);
             continue; // skip non-hybrid logic
 		*/
         }
@@ -2065,3 +2093,10 @@ public static void assignBeforeUpdateCasesWithTVMLogic(
     }
 }
 ```
+
+## History
+
+| Date | Change |
+|---|---|
+| 2026-10-12 | Documented from the org version of that date. |
+| 2026-10-15 | Org version of 2026-10-15 (2026-10-15 06:03 UTC, Sandip Patel). New method `setManualInsertAssignedStatus` (line 1380), called after Manual routing in `assignCasesWithTVMLogic`: line 1242 (Hybrid) and line 1372 (Non-Hybrid). A third call at line 1875 is inside commented-out code and does not run. It sets `Status_Filtered__c = 'Assigned'` at **insert** when **all** of these hold: Case Entry = Manual; Foundation or New Digital Support; `Future_Case__c` not true; start date empty or not in the future; status empty or `New`; a user is assigned and Owner = Case Assign To. Auto routing and updates are not affected. See [REQ_003](../../03%20-%20Requirements/REQ_003_2026-10-14%20-%20Assignment%20Batches%20-%20Pick%20New%20Cases%20and%20Set%20Status%20to%20Assigned.md) for the Auto side. |

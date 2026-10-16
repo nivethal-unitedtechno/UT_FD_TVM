@@ -150,3 +150,39 @@ Add to `CaseAssignmentBatchTest` and `CaseAssignmentHybridBatchTest`:
 - [ ] **D3.** Should the batches save **only the Cases they assigned**, instead of every Case in scope? This cuts flow and trigger runs. It is a small extra change and is not part of the requirement as written.
 - [ ] **D4.** Confirm that recording unassigned hours through `Dynamic_Hours_Calculation` on `New → Assigned` is expected.
 - [ ] **D5.** Can Foundation Cases have the categories Digital OEM, Digital Reporting, Platform Requests or Website Analytics, where `Assigned` is not a valid value?
+
+## 9. Update - 2026-10-16: related changes in the sandbox
+
+Checked in FD - TVM Sandbox on 2026-10-16. **This requirement is still not implemented**: neither batch sets `Status_Filtered__c = 'Assigned'`.
+Two related changes have been made since this plan was written:
+
+| Date (UTC) | Component | Change | By |
+|---|---|---|---|
+| 2026-10-15 06:03 | `CalculateCaseDueDate` | New method `setManualInsertAssignedStatus`: at **insert**, after **Manual** routing, sets `Status_Filtered__c = 'Assigned'`. See [CalculateCaseDueDate.md](../07%20-%20Technical%20Documents/Apex/CalculateCaseDueDate.md#history). | Sandip Patel |
+| 2026-10-16 05:19 / 06:36 | `CaseAssignmentHybridBatch` / `CaseAssignmentBatch` | OOO users excluded from round-robin (REQ_004), and code reformatted. **No status change added.** | Sandip Patel |
+
+**What this means for this requirement:**
+
+1. **The Manual side is done; this requirement covers the Auto side.** After this change, both entry types will end up `Assigned` once a user is given the Case: Manual at insert (`CalculateCaseDueDate`), Auto when the batch runs.
+2. **Line numbers in section 5 are out of date.** They refer to the 2026-10-14 code. In today's versions, the assignment lines are:
+   - `CaseAssignmentBatch`: about lines 268–271 and 298–301
+   - `CaseAssignmentHybridBatch`: about lines 212–214
+
+   Re-check them when implementing.
+3. **Keep the conditions consistent with Manual.** `setManualInsertAssignedStatus` only sets `Assigned` when all of these hold:
+   - status is empty or `New`
+   - `Future_Case__c` is not true
+   - the start date is empty or not in the future
+   - Owner = Case Assign To
+
+   This plan only checks status = `New`. See D6.
+4. **Deploy with REQ_004.** Both requirements change the same assignment lines, so build and deploy them together, or REQ_004 first.
+
+- [ ] **D6.** Should the batches use the same conditions as `setManualInsertAssignedStatus`? That means not setting `Assigned` for Future Cases or Cases with a start date in the future, in addition to the `New` check.
+
+## History
+
+| Date | Change |
+|---|---|
+| 2026-10-14 | Plan created. |
+| 2026-10-16 | Section 9 added: Manual-side status change in `CalculateCaseDueDate` (2026-10-15), OOO change in both batches (2026-10-16), outdated line numbers, new decision D6. |

@@ -1,0 +1,24 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller = "OpportunityLineItemController" access="global" >
+    
+    <aura:handler name="init" action="{!c.getProductList}" value="{!this}" />
+    <aura:attribute name="productList" type="List" />
+    <lightning:card class="slds-card__header-link baseCard__header-title-container" variant="Narrow" title="Products" iconName="standard:account">
+        <p class="slds-p-horizontal_small">
+        <label for="ProdName">Product Name - Sales Price </label>    
+        <aura:iteration items="{!v.productList}" var="product">
+            <lightning:recordViewForm recordId="{!product.Id}" objectApiName="OpportunityLineItem" > 
+                <div class="slds=theme_default">
+                <lightning:outputField aura:id="Product Name" fieldName="Contract_Product_Name__c" variant="label-hidden"/>
+                <lightning:outputField aura:id="Sales Price" fieldName="UnitPrice" variant="label-hidden"/>
+                </div>
+                <!--
+                <div class="slds=theme_default">
+                <lightning:outputField aura:id="Price" fieldName="UnitPrice" variant="label-hidden"/>
+                </div>
+				-->
+            </lightning:recordViewForm>
+            <br/>
+            </aura:iteration>
+        	</p>
+     </lightning:card>
+</aura:component>

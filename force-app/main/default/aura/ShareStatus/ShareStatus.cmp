@@ -1,0 +1,119 @@
+<aura:component controller="ShareStatusController"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId">
+    <aura:attribute name="status" type="String"/>
+    <aura:attribute name="connection" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:handler event="force:refreshView" action="{!c.doInit}" />
+    <aura:handler event="aura:locationChange" action="{!c.doInit}"/>
+    <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner size="small"/>
+    </aura:if>
+    <!--lightning:card>
+        <div class="c-container">
+            <lightning:layout >
+                <lightning:layoutItem padding="around-small">
+                    <div class="header-column">
+                        <h1><p><img src="{!$Resource.ServiceAppIcon}" height="24" width="24" style="background-color:blue;border-radius:20%;" alt="Account"/>
+                            <b class="field-title-title" style="margin-left:0.5em">        Salesforce to Salesforce Sharing</b></p> </h1>
+                              
+                    </div>
+                </lightning:layoutItem> 
+            </lightning:layout>
+        </div>
+        <div class="c-container">
+        <lightning:layout >
+            <lightning:layoutItem padding="around-small">
+                <div class="header-column">
+                    <p class="field-title" title="Field 1">Status</p>
+                    <p>{!v.status}</p>
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small">
+                <div class="header-column">
+                    <p class="field-title" title="Field2 (3)">Connection</p>
+                    <p>{!v.connection}</p>
+                </div>
+             </lightning:layoutItem>  
+            </lightning:layout>
+        </div>
+    </lightning:card-->
+    <!--lightning:card>
+        <div class="slds-media slds-media-center slds-has-flexi-truncate">
+          <div class="slds-media__figure">
+                <img src="{!$Resource.ServiceAppIcon}" height="24" width="24" style="background-color:blue;border-radius:20%;" alt="Account"/>
+          </div>
+          <div class="slds-media__body slds-text-heading">
+            <h2 data-aura-rendered-by="355:0">
+             <div class="slsd-title__detail" data-aura-rendered-by= "426:0">
+                <span class="test-id__field-label">Salesforce to Salesforce Sharing</span>
+            </div>
+            </h2>
+          </div>
+        </div>
+    </lightning:card-->
+    <div class="VIEW slds-card" data-aura-rendered-by="363:0">
+        <div class="slds-card__header slds-grid slds-m-bottom--none" data-aura-rendered-by="365:0">
+            <div class="slds-media slds-media--center slds-has-flexi-truncate" data-aura-rendered-by="366:0">
+                <div class="slds-media__figure" data-aura-rendered-by="367:0">
+                    <div class="slds-icon slds-icon-standard-contact slds-icon--small forceEntityIcon" style="background-color: #F2CF5B" data-aura-rendered-by="3:721;a" data-aura-class="forceEntityIcon">
+                            <img src="{!$Resource.ServiceAppIcon}" height="24" width="24" style="background-color:blue;border-radius:20%;" alt="Account"/>
+                    </div>
+                </div>
+                <div class="slds-media__body slds-text-heading--small" data-aura-rendered-by="369:0">
+                    <h2 data-aura-rendered-by="370:0">
+                        <a class="slds-card__header-link slds-truncate slds-show--inline-block uiOutputURL" href="javascript:void(0);" dir="ltr" title="" data-aura-rendered-by="374:0" data-aura-class="uiOutputURL" data-interactive-lib-uid="3">Salesforce to Salesforce Sharing</a>
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="slds-card__body" data-aura-rendered-by="421:0">
+            <!--render facet: 422:0-->
+            <div class="slds-card__body--inner" data-aura-rendered-by="423:0">
+                <div class="slds-tile__detail" data-aura-rendered-by="424:0">
+                    <div class="slds-grid slds-grid--align-center slds-show slds-m-bottom--small slds-m-top--small" data-aura-rendered-by="425:0">
+                        <!--render facet: 428:0-->
+                        <!--render facet: 430:0-->
+                        <!--render facet: 431:0--><!--render facet: 432:0-->
+                        <!--render facet: 433:0--><!--render facet: 434:0-->
+                    </div>
+                    <div class="slds-show" data-aura-rendered-by="435:0">
+                        <!--render facet: 10:721;a-->
+                        <div class="container VIEW forceQuickActionLayout inlineEditEnabled" data-aura-rendered-by="12:721;a" data-aura-class="forceQuickActionLayout">
+                            <!--render facet: 13:721;a-->
+                            <div data-aura-rendered-by="14:721;a"></div>
+                            <!--render facet: 22:721;a--><!--render facet: 475:0-->
+                            <div class="pageLevelErrors" tabindex="-1" data-aura-rendered-by="476:0"></div>
+                            <!--render facet: 477:0--><!--render facet: 480:0-->
+                            <section data-aura-rendered-by="481:0">
+                                <div class="riseTransitionEnabled" data-aura-rendered-by="482:0">
+                                <div class="mdp forcePageBlock forceRecordLayout" data-aura-rendered-by="590:0" data-aura-class="forcePageBlock forceRecordLayout">
+                                    <div class="test-id__section slds-section  slds-is-open mdp forcePageBlockSection forcePageBlockSectionView" data-aura-rendered-by="585:0" data-aura-class="forcePageBlockSection forcePageBlockSectionView">
+                                        <!--render facet: 586:0-->
+                                        <div class="test-id__section-content slds-section__content section__content slds-p-top--none" data-aura-rendered-by="587:0" id="543:0">
+                                            <div class="slds-form slds-form_stacked " role="list" data-aura-rendered-by="588:0">
+                                                <div class="slds-grid slds-gutters_small mdp cols-2 forcePageBlockSectionRow" data-aura-rendered-by="581:0" data-aura-class="forcePageBlockSectionRow">
+                                                    <div class="slds-col slds-grid slds-has-flexi-truncate  mdp forcePageBlockItem forcePageBlockItemView" role="listitem" data-aura-rendered-by="550:0" data-aura-class="forcePageBlockItem forcePageBlockItemView">
+                                                        <div class="slds-form-element slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element" data-aura-rendered-by="551:0">
+                                                            <div class="test-id__field-label-container slds-form-element__label" data-aura-rendered-by="552:0">
+                                                                <span class="test-id__field-label" data-aura-rendered-by="553:0">Status</span></div>
+                                                                <div class="slds-form-element__control slds-grid itemBody" data-aura-rendered-by="555:0">
+                                                                    <span class="test-id__field-value slds-form-element__static slds-grow " data-aura-rendered-by="556:0">
+                                                                        <span data-aura-rendered-by="548:0" class="uiOutputText" data-aura-class="uiOutputText">{!v.status}</span>
+                                                                    </span><!--render facet: 558:0-->
+                                                                    </div>
+                                                                </div>
+                                                    </div>
+                                                    <div class="slds-col slds-grid slds-has-flexi-truncate  mdp forcePageBlockItem forcePageBlockItemView" role="listitem" data-aura-rendered-by="568:0" data-aura-class="forcePageBlockItem forcePageBlockItemView">
+                                                        <div class="slds-form-element slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element" data-aura-rendered-by="569:0">
+                                                            <div class="test-id__field-label-container slds-form-element__label" data-aura-rendered-by="570:0">
+                                                                <span class="test-id__field-label" data-aura-rendered-by="571:0">Connection</span>
+                                                            </div>
+                                                            <div class="slds-form-element__control slds-grid itemBody" data-aura-rendered-by="573:0">
+                                                                <span class="test-id__field-value slds-form-element__static slds-grow " data-aura-rendered-by="574:0">
+                                                                    <span data-aura-rendered-by="565:0">{!v.connection}</span>
+                                                                </span>
+                                                                <!--render facet: 576:0-->
+                                                                </div></div></div></div></div></div></div></div></div><!--render facet: 487:0-->
+                                                                <div class="hideEl riseTransitionEnabled" data-aura-rendered-by="489:0"></div></section></div></div><!--render facet: 437:0--></div></div></div></div>
+</aura:component>

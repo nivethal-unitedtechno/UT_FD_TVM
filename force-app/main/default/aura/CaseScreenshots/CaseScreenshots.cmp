@@ -1,0 +1,8 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <lightning:card iconName="Screenshots" title="">
+        <div class="slds-p-left_large slds-p-right_medium">	
+            <lightning:recordForm  recordId="{!v.recordId}" objectApiName="Case" fields="Screenshots__c"/>
+        </div>
+    </lightning:card>
+</aura:component>

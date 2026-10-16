@@ -1,0 +1,38 @@
+<apex:component access="global" controller="BudgetsOfAmount">
+    <apex:attribute name="mediaIdValue" type="String" description="This is the Id of the account" assignTo="{!mediaId}" access="global" />
+    <html>
+        <head>
+        </head>
+    </html>
+    New Month Media Budget<br/>
+    <apex:outputPanel rendered="{!AND(MediaObj.PPC_Budget_Sales__c != 0 , MediaObj.PPC_Budget_Sales__c != null)}">
+        <span>New Search  : {!MediaObj.PPC_Budget_Sales__c} </span><br/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(MediaObj.PPC_Budget_Service__c != 0 , MediaObj.PPC_Budget_Service__c != null)}">
+        <span>Service Search  : {!MediaObj.PPC_Budget_Service__c} </span><br/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!AND(MediaObj.Display_Budget_Preowned__c != 0 , MediaObj.Display_Budget_Preowned__c != null)}">
+        <span>New Display  : {!MediaObj.Display_Budget_Preowned__c} </span><br/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(MediaObj.Video_Budget_Sales__c != 0 , MediaObj.Video_Budget_Sales__c != null)}">
+        <span>New Video  : {!MediaObj.Video_Budget_Sales__c} </span><br/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(MediaObj.Video_Budget_Preowned__c != 0 , MediaObj.Video_Budget_Preowned__c != null)}">
+        <span>Used Video : {!MediaObj.Video_Budget_Preowned__c} </span><br/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(MediaObj.Display_Budget_Preowned__c != 0 , MediaObj.Display_Budget_Preowned__c != null)}">
+        <span>Used Display  : {!MediaObj.Display_Budget_Preowned__c} </span><br/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(MediaObj.SMA_Budget_Sales__c != 0 , MediaObj.SMA_Budget_Sales__c != null)}">
+        <span>Facebook Sales  : {!MediaObj.SMA_Budget_Sales__c} </span><br/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(MediaObj.SMA_Budget_Service__c != 0 , MediaObj.SMA_Budget_Service__c != null)}">
+        <span>Facebook Service  : {!MediaObj.SMA_Budget_Service__c} </span><br/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!AND(MediaObj.PPC_Budget_DISC__c != 0 , MediaObj.PPC_Budget_DISC__c != null)}">
+        <span>Used Search  : {!MediaObj.PPC_Budget_DISC__c} </span><br/>
+    </apex:outputPanel>
+    
+    
+</apex:component>

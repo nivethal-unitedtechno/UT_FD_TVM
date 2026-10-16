@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Hyundai - Foundation Enrollment Report</label>
+    <protected>false</protected>
+    <values>
+        <field>DateOfMonth__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>DayOfWeek__c</field>
+        <value xsi:type="xsd:string">Mon</value>
+    </values>
+    <values>
+        <field>Email_Body_Text__c</field>
+        <value xsi:type="xsd:string">Attached you will find your Hyundai Alliance Program Weekly enrollment report.</value>
+    </values>
+    <values>
+        <field>Email_Subject__c</field>
+        <value xsi:type="xsd:string">Hyundai Alliance Program | Foundation Direct | Weekly Enrollment Report</value>
+    </values>
+    <values>
+        <field>External_Emails_BCC__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>External_Emails__c</field>
+        <value xsi:type="xsd:string">ashlyndmurray@gmail.com</value>
+    </values>
+    <values>
+        <field>Frequency__c</field>
+        <value xsi:type="xsd:string">Weekly</value>
+    </values>
+    <values>
+        <field>From_Email_Address__c</field>
+        <value xsi:type="xsd:string">support@info.foundationdirect.com</value>
+    </values>
+    <values>
+        <field>Report_Id__c</field>
+        <value xsi:type="xsd:string">00OVb000003JpRhMAK</value>
+    </values>
+    <values>
+        <field>Report_Name__c</field>
+        <value xsi:type="xsd:string">Live &amp; Onboarding Hyundai Dealers</value>
+    </values>
+    <values>
+        <field>Sort_Field__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Sort_Order__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Time__c</field>
+        <value xsi:type="xsd:string">11:00 AM</value>
+    </values>
+    <values>
+        <field>Unique_Field_Api_Name__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>
